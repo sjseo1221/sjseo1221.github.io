@@ -25,4 +25,4 @@ GitHub 사용자명·사이트 제목은 `site.config.mjs` 한 곳에서만 고�
 - 원본 자료(메모·필기·강의안)와 `source_ref` 는 이 저장소에 넣지 않는다. frontmatter 에 `source_ref` 가 있으면 스키마가 빌드를 거부한다.
 - 강의안·필기 이미지는 게시하지 않는다.
 - 본문의 raw HTML 은 제거되고, 링크는 http(s)·mailto·상대경로·# 만, 이미지는 상대경로만 남는다(관리 웹앱 미리보기와 같은 출력).
-- `src/content/posts/day-012.md` 는 샘플 글이다. **첫 실발행 전에 삭제한다.**
+- 글은 관리 웹앱의 [발행] 이 `src/content/posts/day-NNN.md` 로 커밋한다. 샘플 글은 첫 배포 전에 지웠다(원본은 관리 웹앱 mock `drafts/day-012`).
