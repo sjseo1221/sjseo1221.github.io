@@ -1,0 +1,45 @@
+---
+// 글 페이지 전용. ```mermaid 블록(Shiki 제외 → 날것 <pre>)을 클라이언트에서 그림으로 바꾼다.
+// 문법 오류 블록은 parse 선검사에서 걸러 코드 그대로 둔다. render 단계에서 실패해도 원래 <pre> 로 되돌린다(경고 문구 없음).
+---
+
+<script>
+  async function renderMermaid() {
+    const pres = new Set<HTMLElement>();
+    document
+      .querySelectorAll<HTMLElement>('article pre > code.language-mermaid, article pre[data-language="mermaid"]')
+      .forEach((el) => pres.add(el.tagName === 'PRE' ? el : el.parentElement!));
+    if (!pres.size) return;
+
+    const { default: mermaid } = await import('mermaid');
+    const dark = matchMedia('(prefers-color-scheme: dark)').matches;
+    mermaid.initialize({
+      startOnLoad: false,
+      securityLevel: 'strict',
+      suppressErrorRendering: true,
+      theme: dark ? 'dark' : 'neutral',
+    });
+
+    const rendered: { div: HTMLElement; pre: HTMLElement }[] = [];
+    for (const pre of pres) {
+      const code = pre.textContent ?? '';
+      if (!(await mermaid.parse(code, { suppressErrors: true }))) continue;
+      const div = document.createElement('div');
+      div.className = 'mermaid';
+      div.textContent = code;
+      pre.replaceWith(div);
+      rendered.push({ div, pre });
+    }
+    if (!rendered.length) return;
+
+    try {
+      await mermaid.run({ nodes: rendered.map((r) => r.div), suppressErrors: true });
+    } finally {
+      // 그림이 생기지 않은 블록은 원래 코드로 복원
+      for (const { div, pre } of rendered) {
+        if (!div.querySelector('svg')) div.replaceWith(pre);
+      }
+    }
+  }
+  renderMermaid().catch(() => {});
+</script>

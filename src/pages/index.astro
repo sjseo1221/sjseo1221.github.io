@@ -1,0 +1,32 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import { SITE_TITLE, SITE_DESCRIPTION } from '../../site.config.mjs';
+import { formatDate, isoDate, dayLabel } from '../lib/format';
+
+const posts = (await getCollection('posts')).sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime() || b.data.day - a.data.day,
+);
+---
+
+<Base>
+  <header class="home-header">
+    <h1>{SITE_TITLE}</h1>
+    <p class="muted">{SITE_DESCRIPTION}</p>
+  </header>
+  <ul class="post-list">
+    {
+      posts.map((post) => (
+        <li>
+          <a href={`/posts/${post.id}/`}>
+            <span class="post-meta">
+              {dayLabel(post.data.day)} · <time datetime={isoDate(post.data.date)}>{formatDate(post.data.date)}</time>
+            </span>
+            <span class="post-title">{post.data.title}</span>
+            <span class="post-summary">{post.data.summary}</span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</Base>

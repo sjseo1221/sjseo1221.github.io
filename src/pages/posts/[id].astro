@@ -1,0 +1,50 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Mermaid from '../../components/Mermaid.astro';
+import { formatDate, isoDate, dayLabel, pad3, decorateBody } from '../../lib/format';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts');
+  return posts.map((entry) => {
+    // 파일명과 day 가 어긋나면 관리 웹앱의 post_path · blog_url 계약이 깨진다
+    if (entry.id !== `day-${pad3(entry.data.day)}`) {
+      throw new Error(`글 파일명 ${entry.id} 이(가) day ${entry.data.day} 과 맞지 않습니다 (day-${pad3(entry.data.day)}.md 이어야 함)`);
+    }
+    return { params: { id: entry.id }, props: { entry } };
+  });
+}
+
+interface Props {
+  entry: CollectionEntry<'posts'>;
+}
+
+const { entry } = Astro.props;
+const { data } = entry;
+const html = entry.rendered?.html;
+if (!html?.trim()) {
+  // 빈 본문으로 조용히 발행되지 않게 빌드를 멈춘다
+  throw new Error(`글 ${entry.id} 의 렌더된 본문이 비어 있습니다`);
+}
+const body = decorateBody(html);
+---
+
+<Base title={data.title} description={data.summary}>
+  <nav class="back"><a href="/">← 목록</a></nav>
+  <article>
+    <header class="post-header">
+      <p class="post-meta">
+        {dayLabel(data.day)} · <time datetime={isoDate(data.date)}>{formatDate(data.date)}</time> · {data.week}주차
+      </p>
+      <h1>{data.title}</h1>
+    </header>
+    <div class="prose">
+      <Fragment set:html={body} />
+    </div>
+    <footer class="post-footer">
+      {data.tags.length > 0 && <p class="tags">{data.tags.join(' · ')}</p>}
+      {data.ai_generated && <p class="muted ai-note">수업 메모를 AI로 정리한 초안을 검수해 올린 글입니다.</p>}
+    </footer>
+  </article>
+  <Mermaid />
+</Base>
