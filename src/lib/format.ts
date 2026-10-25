@@ -23,11 +23,6 @@ export function pad3(n: number): string {
   return String(n).padStart(3, '0');
 }
 
-/** "Day 012" */
-export function dayLabel(day: number): string {
-  return `Day ${pad3(day)}`;
-}
-
 /** <pre>·<code> 블록 | 태그 | 태그 밖 텍스트 */
 const TOKEN = /<(pre|code)(?=[\s>])[\s\S]*?<\/\1>|<[^>]*>|[^<]+/g;
 const UNCERTAIN = '<mark class="uncertain" title="필기 인식이 불확실한 부분">[?]</mark>';
