@@ -8,6 +8,7 @@
   --note-line: #7dd3fc;
   --quote-line: #d6d3d1;
   --uncertain-bg: #fef3c7cc;
+  --mark-bg: #fef08acc;
   --font-sans: "Pretendard", "Apple SD Gothic Neo", system-ui, -apple-system, "Segoe UI", "Malgun Gothic", "Noto Sans KR", sans-serif;
   --font-mono: ui-monospace, "SF Mono", "Cascadia Code", "D2Coding", Consolas, monospace;
   color-scheme: light dark;
@@ -24,6 +25,7 @@
     --note-line: #0369a1;
     --quote-line: #44403c;
     --uncertain-bg: rgba(252, 211, 77, 0.15);
+    --mark-bg: rgba(250, 204, 21, 0.3);
   }
 }
 
@@ -231,6 +233,14 @@ a {
 
 .prose blockquote p:last-child {
   margin-bottom: 0;
+}
+
+/* ==강조== — 속성 없는 mark. 필기 불확실 표시(mark.uncertain)와 구분 */
+.prose mark:not(.uncertain) {
+  padding: 0 0.15em;
+  border-radius: 3px;
+  background: var(--mark-bg);
+  color: inherit;
 }
 
 mark.uncertain {

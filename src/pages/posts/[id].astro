@@ -2,7 +2,7 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import Mermaid from '../../components/Mermaid.astro';
-import { formatDate, isoDate, dayLabel, pad3, decorateBody } from '../../lib/format';
+import { formatDate, isoDate, pad3, decorateBody } from '../../lib/format';
 
 export async function getStaticPaths() {
   const posts = await getCollection('posts');
@@ -34,7 +34,7 @@ const body = decorateBody(html);
   <article>
     <header class="post-header">
       <p class="post-meta">
-        {dayLabel(data.day)} · <time datetime={isoDate(data.date)}>{formatDate(data.date)}</time> · {data.week}주차
+        <time datetime={isoDate(data.date)}>{formatDate(data.date)}</time> · {data.week}주차
       </p>
       <h1>{data.title}</h1>
     </header>
